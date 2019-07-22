@@ -52,6 +52,7 @@ public final class S3BucketObjectList: ResponseObjectSerializable {
     public var bucket: String?
     public var truncated: Bool?
     public var maxKeys: Int?
+    public var token: String?
     
     public init?(response: HTTPURLResponse, representation xml: XMLIndexer) {
         bucket = xml["ListBucketResult"]["Name"].element?.text
@@ -59,7 +60,11 @@ public final class S3BucketObjectList: ResponseObjectSerializable {
         if let isTruncated = xml["ListBucketResult"]["IsTruncated"].element?.text {
             truncated = Bool(isTruncated == "true")
         }
-        
+
+        if let tokenXml = xml["ListBucketResult"]["NextContinuationToken"].element?.text {
+            token = String(tokenXml)
+        }
+
         if let maximumKeys = xml["ListBucketResult"]["MaxKeys"].element?.text {
             maxKeys = Int(maximumKeys)
         }
